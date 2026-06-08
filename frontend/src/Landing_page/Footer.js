@@ -11,6 +11,9 @@ function Footer() {
                  <p className='mt-3'>
               &copy; 2010 - 2024, Not Zerodha Broking Ltd. All rights reserved.
             </p>
+            <p className='mt-1 text-muted' style={{ fontSize: '12px' }}>
+              Created by Gaurav Borkar
+            </p>
             </div>
              <div className='col'>
                 <p>Company</p>
