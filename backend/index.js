@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 passport.use(UserModel.createStrategy());
 
-app.post("/signup", async (req, res) => {
+app.post("/api/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = new UserModel({ email });
@@ -50,7 +50,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/login", passport.authenticate("local", { session: false }), (req, res) => {
+app.post("/api/login", passport.authenticate("local", { session: false }), (req, res) => {
   const token = jwt.sign({ id: req.user._id }, process.env.TOKEN_KEY || "secret_key", {
     expiresIn: 3 * 24 * 60 * 60,
   });
@@ -63,7 +63,7 @@ app.post("/login", passport.authenticate("local", { session: false }), (req, res
   res.status(200).json({ message: "User logged in successfully", success: true, user: req.user });
 });
 
-app.get('/addHoldings', async (req, res) => {
+app.get('/api/addHoldings', async (req, res) => {
   let tempHoldings = [
     {
       name: "BHARTIARTL",
@@ -190,22 +190,22 @@ app.get('/addHoldings', async (req, res) => {
   res.send("Done");
 });
 
-app.get('/allHoldings', userVerification, async (req, res) => {
+app.get('/api/allHoldings', userVerification, async (req, res) => {
   let allHoldings = await HoldingsModel.find({});
   res.json(allHoldings);
 });
 
-app.get('/allPositions', userVerification, async (req, res) => {
+app.get('/api/allPositions', userVerification, async (req, res) => {
   let allPositions = await PositionsModel.find({});
   res.json(allPositions);
 });
 
-app.get('/allOrders', userVerification, async (req, res) => {
+app.get('/api/allOrders', userVerification, async (req, res) => {
   let allOrders = await OrdersModel.find({});
   res.json(allOrders);
 });
 
-app.post('/newOrder', userVerification, async (req, res) => {
+app.post('/api/newOrder', userVerification, async (req, res) => {
   let newOrder = new OrdersModel({
     name: req.body.name,
     qty: req.body.qty,
@@ -222,10 +222,15 @@ app.post('/newOrder', userVerification, async (req, res) => {
 mongoose.connect(uri)
   .then(() => {
     console.log("Connected to MongoDB!");
-    app.listen(PORT, () => {
-      console.log(`App Started on port ${PORT}`);
-    });
+    // Only listen locally, Vercel will handle the exported app
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(PORT, () => {
+        console.log(`App Started on port ${PORT}`);
+      });
+    }
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
+
+module.exports = app;
