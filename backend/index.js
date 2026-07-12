@@ -52,17 +52,30 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.post("/api/login", passport.authenticate("local", { session: false }), (req, res) => {
-  const token = jwt.sign({ id: req.user._id }, process.env.TOKEN_KEY || "secret_key", {
-    expiresIn: 3 * 24 * 60 * 60,
-  });
+app.post("/api/login", (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) {
+      return res.status(400).json({ message: err.message || "An error occurred during authentication", success: false });
+    }
+    if (!user) {
+      return res.status(400).json({ message: info ? info.message : "Login failed", success: false });
+    }
+    req.logIn(user, { session: false }, (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message || "Login failed", success: false });
+      }
+      const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY || "secret_key", {
+        expiresIn: 3 * 24 * 60 * 60,
+      });
 
-  res.cookie("token", token, {
-    withCredentials: true,
-    httpOnly: false,
-    maxAge: 3 * 24 * 60 * 60 * 1000,
-  });
-  res.status(200).json({ message: "User logged in successfully", success: true, user: req.user });
+      res.cookie("token", token, {
+        withCredentials: true,
+        httpOnly: false,
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      });
+      res.status(200).json({ message: "User logged in successfully", success: true, user });
+    });
+  })(req, res, next);
 });
 
 app.get('/api/addHoldings', async (req, res) => {
