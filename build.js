@@ -2,9 +2,9 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-function runCommand(command, cwd) {
+function runCommand(command, cwd, env = {}) {
   console.log(`Running: ${command} in ${cwd}`);
-  execSync(command, { stdio: 'inherit', cwd: path.join(__dirname, cwd) });
+  execSync(command, { stdio: 'inherit', cwd: path.join(__dirname, cwd), env: { ...process.env, ...env } });
 }
 
 function copyRecursiveSync(src, dest) {
@@ -24,7 +24,7 @@ function copyRecursiveSync(src, dest) {
 try {
   // 1. Build Frontend
   runCommand('npm install', 'frontend');
-  runCommand('npm run build', 'frontend');
+  runCommand('npm run build', 'frontend', { CI: 'false' });
 
   // 2. Build Dashboard
   runCommand('npm install', 'Dashboard');
