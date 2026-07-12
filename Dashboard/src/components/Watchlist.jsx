@@ -13,7 +13,7 @@ import {
   MoreHoriz,
 } from "@mui/icons-material";
 
-import { watchlist } from "../Data/data";
+import { watchlist } from "../data/data";
 // import { DoughnutChart } from "./DoughnoutChart";
 
 const Watchlist = () => {

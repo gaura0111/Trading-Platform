@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { positions } from "../Data/data";
+import { positions } from "../data/data";
 
 const Positions = () => {
   const [allPositions, setAllPositions] = useState(positions);
