@@ -42,7 +42,12 @@ const Signup = () => {
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
-          window.location.href = "http://localhost:5173";
+          // If local development, redirect to 5173, otherwise use relative path
+          if (window.location.hostname === "localhost") {
+            window.location.href = "http://localhost:5173";
+          } else {
+            window.location.href = "/dashboard";
+          }
         }, 1000);
       } else {
         handleError(message);
