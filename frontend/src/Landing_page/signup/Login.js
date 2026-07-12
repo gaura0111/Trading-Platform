@@ -54,7 +54,7 @@ const Login = () => {
         handleError(message);
       }
     } catch (error) {
-      handleError("An error occurred. Please try again.");
+      handleError(error.response?.data?.message || "An error occurred. Please try again.");
     }
     setInputValue({
       ...inputValue,
