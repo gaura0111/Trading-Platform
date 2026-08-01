@@ -278,12 +278,14 @@ setInterval(async () => {
 mongoose.connect(uri)
   .then(() => {
     console.log("Connected to MongoDB!");
-    server.listen(PORT, () => {
-      console.log(`App Started on port ${PORT} with WebSocket`);
-    });
+    if (!process.env.VERCEL) {
+      server.listen(PORT, () => {
+        console.log(`App Started on port ${PORT} with WebSocket`);
+      });
+    }
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
 
-module.exports = server;
+module.exports = app;
