@@ -13,7 +13,8 @@
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/dashboard/((?!assets/|static/).*)", "destination": "/dashboard/index.html" },
+    { "source": "/dashboard/(.*)", "destination": "/dashboard/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
     { "source": "/((?!assets/|static/).*)", "destination": "/index.html" }
   ]
 }

@@ -11,7 +11,7 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      window.location.href = "http://localhost:3000/login";
+      window.location.href = window.location.hostname === "localhost" ? "http://localhost:3000/login" : "/login";
     }
     return Promise.reject(error);
   }
