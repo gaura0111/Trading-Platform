@@ -234,18 +234,56 @@ app.post('/api/newOrder', userVerification, async (req, res) => {
 
 
 
+const { Server } = require("socket.io");
+const http = require("http");
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected for live data");
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+// Broadcast live prices every 2 seconds
+setInterval(async () => {
+  try {
+    const allHoldings = await HoldingsModel.find({});
+    const allPositions = await PositionsModel.find({});
+    
+    // Simulate slight price changes (0.5% fluctuation)
+    const liveHoldings = allHoldings.map(stock => ({
+      name: stock.name,
+      price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
+    }));
+
+    const livePositions = allPositions.map(stock => ({
+      name: stock.name,
+      price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
+    }));
+
+    io.emit("live-prices", { holdings: liveHoldings, positions: livePositions });
+  } catch (err) {
+    console.error("Error broadcasting live data", err);
+  }
+}, 2000);
+
 mongoose.connect(uri)
   .then(() => {
     console.log("Connected to MongoDB!");
-    // Only listen locally, Vercel will handle the exported app
-    if (process.env.NODE_ENV !== "production") {
-      app.listen(PORT, () => {
-        console.log(`App Started on port ${PORT}`);
-      });
-    }
+    server.listen(PORT, () => {
+      console.log(`App Started on port ${PORT} with WebSocket`);
+    });
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
 
-module.exports = app;
+module.exports = server;
