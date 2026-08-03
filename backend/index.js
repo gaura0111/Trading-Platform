@@ -15,7 +15,7 @@ const { UserModel } = require('./model/UserModel');
 const { userVerification } = require('./middlewares/authMiddleware');
 
 const PORT = process.env.PORT || 3002;
-const uri = process.env.MONGO_URL;
+const uri = process.env.MONGODB_URI || process.env.MONGO_URL;
 
 const app = express();
 
