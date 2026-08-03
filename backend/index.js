@@ -42,8 +42,9 @@ app.post("/api/signup", async (req, res) => {
     });
 
     res.cookie("token", token, {
-      withCredentials: true,
       httpOnly: false,
+      secure: true,
+      sameSite: "none",
       maxAge: 3 * 24 * 60 * 60 * 1000,
     });
     res.status(201).json({ message: "User signed in successfully", success: true, user: registeredUser });
@@ -72,8 +73,9 @@ app.post("/api/login", (req, res, next) => {
       });
 
       res.cookie("token", token, {
-        withCredentials: true,
         httpOnly: false,
+        secure: true,
+        sameSite: "none",
         maxAge: 3 * 24 * 60 * 60 * 1000,
       });
       res.status(200).json({ message: "User logged in successfully", success: true, user });
@@ -256,7 +258,8 @@ io.on("connection", (socket) => {
 });
 
 // Broadcast live prices every 2 seconds
-setInterval(async () => {
+if (!process.env.VERCEL) {
+  setInterval(async () => {
   try {
     const allHoldings = await HoldingsModel.find({});
     const allPositions = await PositionsModel.find({});
@@ -276,7 +279,8 @@ setInterval(async () => {
   } catch (err) {
     console.error("Error broadcasting live data", err);
   }
-}, 2000);
+  }, 2000);
+}
 
 mongoose.connect(uri)
   .then(() => {
