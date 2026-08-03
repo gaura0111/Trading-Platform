@@ -18,8 +18,8 @@ function Leftsection({
                 </div>
           
          <div className='mt-4 '>
-             < a href={googlePlay}><img src="\media\googlePlayBadge (2).svg"/></a>
-            < a href={appStore}><img src="\media\appstoreBadge (1).svg"/></a>
+             < a href={googlePlay}><img src="/media/googlePlayBadge.svg"/></a>
+            < a href={appStore}><img src="/media/appstoreBadge.svg"/></a>
 
          </div>
            

@@ -842,4 +842,26 @@ hr {
   background-color: rgb(212, 212, 212);
 }
 
+@keyframes flashGreen {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(72, 194, 55, 0.2); }
+  100% { background-color: transparent; }
+}
 
+@keyframes flashRed {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(250, 118, 78, 0.2); }
+  100% { background-color: transparent; }
+}
+
+.flash-green {
+  animation: flashGreen 1s ease-in-out;
+}
+
+.flash-red {
+  animation: flashRed 1s ease-in-out;
+}
+
+.bold {
+  font-weight: bold !important;
+}

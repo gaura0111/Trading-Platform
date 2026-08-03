@@ -37,7 +37,7 @@ app.post("/api/signup", async (req, res) => {
     const user = new UserModel({ email });
     const registeredUser = await UserModel.register(user, password);
     
-    const token = jwt.sign({ id: registeredUser._id }, process.env.TOKEN_KEY || "secret_key", {
+    const token = jwt.sign({ id: registeredUser._id }, process.env.JWT_SECRET || process.env.TOKEN_KEY || "secret_key", {
       expiresIn: 3 * 24 * 60 * 60,
     });
 
@@ -48,6 +48,9 @@ app.post("/api/signup", async (req, res) => {
     });
     res.status(201).json({ message: "User signed in successfully", success: true, user: registeredUser });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Email is already registered", success: false });
+    }
     res.status(400).json({ message: error.message, success: false });
   }
 });
@@ -64,7 +67,7 @@ app.post("/api/login", (req, res, next) => {
       if (err) {
         return res.status(400).json({ message: err.message || "Login failed", success: false });
       }
-      const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY || "secret_key", {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || process.env.TOKEN_KEY || "secret_key", {
         expiresIn: 3 * 24 * 60 * 60,
       });
 

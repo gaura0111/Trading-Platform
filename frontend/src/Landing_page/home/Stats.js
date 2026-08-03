@@ -9,7 +9,7 @@ function Stats() {
                 <h1>Trust with confidence</h1>
                 <br></br>
                 <h3>Customer-first always</h3>
-                <p className='text-muted'> That's why 1.3+ crore customers trust Zerodha with ₹3.5+ lakh crores
+                <p className='text-muted'> That's why 1.3+ crore customers trust Zerodha with â‚¹3.5+ lakh crores
             worth of equity investments.</p>
             <h3>No spam or gimmicks</h3>
                 <p className='text-muted'> No gimmicks, spam, "gamification", or annoying push notifications.
@@ -25,7 +25,7 @@ function Stats() {
 
             </div>
             <div className='col-6 p-5 '>
-                <img style={{width:"90%" }} src='\media\ecosystem (1).png'/>
+                <img style={{width:"90%" }} src='/media/ecosystem.png'/>
                  <div style={{margin:"0 auto" , textAlign:"center"}}>
                 <a href='' style={{textDecoration:"none"}} className='mx-5'>Explore our product <i class="fa-solid fa-arrow-right"></i></a>
                 <a href='' style={{textDecoration:"none"}}>Try Kite demo<i class="fa-solid fa-arrow-right"></i></a>

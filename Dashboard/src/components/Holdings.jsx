@@ -1,16 +1,43 @@
 import React, { useState, useEffect } from "react";
-import axios, { all } from "axios";
+import axios from "axios";
+import { io } from "socket.io-client";
 import { VerticalGraph } from "./VerticalGraph";
 import { holdings } from "../data/data";
 
 const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState(holdings);
+  const [flashClasses, setFlashClasses] = useState({});
 
   useEffect(() => {
     axios.get("/api/allHoldings").then((res) => {
-      // console.log(res.data);
       setAllHoldings(res.data);
     });
+
+    const socket = io("http://localhost:3002");
+    
+    socket.on("live-prices", (data) => {
+      if (data.holdings) {
+        setAllHoldings((prev) => {
+          const newFlashing = {};
+          const updated = prev.map((stock) => {
+            const liveStock = data.holdings.find((s) => s.name === stock.name);
+            if (liveStock) {
+              if (liveStock.price > stock.price) newFlashing[stock.name] = "flash-green";
+              else if (liveStock.price < stock.price) newFlashing[stock.name] = "flash-red";
+              return { ...stock, price: liveStock.price };
+            }
+            return stock;
+          });
+          
+          setFlashClasses(newFlashing);
+          setTimeout(() => setFlashClasses({}), 1000);
+          
+          return updated;
+        });
+      }
+    });
+
+    return () => socket.disconnect();
   }, []);
 
   const labels = allHoldings.map((subArray) => subArray["name"]);
@@ -52,11 +79,11 @@ const Holdings = () => {
             const dayClass = stock.isLoss ? "loss" : "profit";
 
             return (
-              <tr key={index}>
+              <tr key={index} className={flashClasses[stock.name] || ""}>
                 <td>{stock.name}</td>
                 <td>{stock.qty}</td>
                 <td>{stock.avg.toFixed(2)}</td>
-                <td>{stock.price.toFixed(2)}</td>
+                <td className={flashClasses[stock.name] ? "bold" : ""}>{stock.price.toFixed(2)}</td>
                 <td>{curValue.toFixed(2)}</td>
                 <td className={profClass}>
                   {(curValue - stock.avg * stock.qty).toFixed(2)}

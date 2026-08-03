@@ -9,7 +9,7 @@ function Navbar() {
             style={{backgroundColor:"#FFF"}} >
            
   <div class="container p-2">
-    <Link class="navbar-brand" to="/"><img src='\media\logo (1).svg' alt='logo' style={{width:"25%"}}></img> </Link>
+    <Link class="navbar-brand" to="/"><img src='/media/logo.svg' alt='logo' style={{width:"25%"}}></img> </Link>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

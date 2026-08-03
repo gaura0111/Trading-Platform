@@ -7,7 +7,7 @@ function Footer() {
        <div className='container border-top mt-5'>
         <div className='row mt-5'>
             <div className='col'>
-                <img src='\media\logo (1).svg' alt='logo' style={{width:"50%"}}/>
+                <img src='/media/logo.svg' alt='logo' style={{width:"50%"}}/>
                  <p className='mt-3'>
               &copy; 2010 - 2024, Not Zerodha Broking Ltd. All rights reserved.
             </p>
@@ -64,10 +64,10 @@ function Footer() {
         </div>
          <div className="mt-5 text-muted" style={{ fontSize: "14px" }}>
           <p>
-            Zerodha Broking Ltd.: Member of NSE​ &​ BSE – SEBI Registration no.:
+            Zerodha Broking Ltd.: Member of NSEâ€‹ &â€‹ BSE â€“ SEBI Registration no.:
             INZ000031633 CDSL: Depository services through Zerodha Securities
-            Pvt. Ltd. – SEBI Registration no.: IN-DP-100-2015 Commodity Trading
-            through Zerodha Commodities Pvt. Ltd. MCX: 46025 – SEBI Registration
+            Pvt. Ltd. â€“ SEBI Registration no.: IN-DP-100-2015 Commodity Trading
+            through Zerodha Commodities Pvt. Ltd. MCX: 46025 â€“ SEBI Registration
             no.: INZ000038238 Registered Address: Zerodha Broking Ltd.,
             #153/154, 4th Cross, Dollars Colony, Opp. Clarence Public School,
             J.P Nagar 4th Phase, Bengaluru - 560078, Karnataka, India. For any
