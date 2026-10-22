@@ -8,11 +8,13 @@ const Positions = () => {
   const [flashClasses, setFlashClasses] = useState({});
 
   useEffect(() => {
-    axios.get("/api/allPositions").then((res) => {
+    const API_URL = import.meta.env.VITE_API_URL || "";
+    axios.get(`${API_URL}/api/allPositions`, { withCredentials: true }).then((res) => {
       setAllPositions(res.data);
     });
 
-    const socket = io("http://localhost:3002");
+    const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:3002";
+    const socket = io(SOCKET_URL);
     
     socket.on("live-prices", (data) => {
       if (data.positions) {

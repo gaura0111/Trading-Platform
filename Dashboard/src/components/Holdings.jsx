@@ -9,11 +9,13 @@ const Holdings = () => {
   const [flashClasses, setFlashClasses] = useState({});
 
   useEffect(() => {
-    axios.get("/api/allHoldings").then((res) => {
+    const API_URL = import.meta.env.VITE_API_URL || "";
+    axios.get(`${API_URL}/api/allHoldings`, { withCredentials: true }).then((res) => {
       setAllHoldings(res.data);
     });
 
-    const socket = io("http://localhost:3002");
+    const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:3002";
+    const socket = io(SOCKET_URL);
     
     socket.on("live-prices", (data) => {
       if (data.holdings) {

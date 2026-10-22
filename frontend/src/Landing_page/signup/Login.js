@@ -32,8 +32,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const API_URL = process.env.REACT_APP_API_URL || "";
+      const DASHBOARD_URL = process.env.REACT_APP_DASHBOARD_URL || "http://localhost:5173";
       const { data } = await axios.post(
-        "/api/login",
+        `${API_URL}/api/login`,
         {
           ...inputValue,
         },
@@ -43,12 +45,7 @@ const Login = () => {
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
-          // If local development, redirect to 5173, otherwise use relative path
-          if (window.location.hostname === "localhost") {
-            window.location.href = "http://localhost:5173";
-          } else {
-            window.location.href = "/dashboard";
-          }
+          window.location.href = DASHBOARD_URL;
         }, 1000);
       } else {
         handleError(message);

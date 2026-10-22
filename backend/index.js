@@ -1,5 +1,8 @@
 require('dotenv').config();
 
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -42,12 +45,16 @@ app.post("/api/signup", async (req, res) => {
     });
 
     res.cookie("token", token, {
-      httpOnly: false,
-      secure: true,
-      sameSite: "none",
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-    });
-    res.status(201).json({ message: "User signed in successfully", success: true, user: registeredUser });
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      });
+      res.status(201).json({
+        message: "User signed in successfully",
+        success: true,
+        user: { _id: registeredUser._id, email: registeredUser.email, createdAt: registeredUser.createdAt },
+      });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ message: "Email is already registered", success: false });
@@ -74,11 +81,15 @@ app.post("/api/login", (req, res, next) => {
 
       res.cookie("token", token, {
         httpOnly: false,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 3 * 24 * 60 * 60 * 1000,
       });
-      res.status(200).json({ message: "User logged in successfully", success: true, user });
+      res.status(200).json({
+        message: "User logged in successfully",
+        success: true,
+        user: { _id: user._id, email: user.email, createdAt: user.createdAt },
+      });
     });
   })(req, res, next);
 });
@@ -257,35 +268,39 @@ io.on("connection", (socket) => {
   });
 });
 
-// Broadcast live prices every 2 seconds
-if (!process.env.VERCEL) {
+function startLivePriceBroadcast() {
   setInterval(async () => {
-  try {
-    const allHoldings = await HoldingsModel.find({});
-    const allPositions = await PositionsModel.find({});
-    
-    // Simulate slight price changes (0.5% fluctuation)
-    const liveHoldings = allHoldings.map(stock => ({
-      name: stock.name,
-      price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
-    }));
+    try {
+      const allHoldings = await HoldingsModel.find({});
+      const allPositions = await PositionsModel.find({});
 
-    const livePositions = allPositions.map(stock => ({
-      name: stock.name,
-      price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
-    }));
+      // Simulate slight price changes (0.5% fluctuation)
+      const liveHoldings = allHoldings.map(stock => ({
+        name: stock.name,
+        price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
+      }));
 
-    io.emit("live-prices", { holdings: liveHoldings, positions: livePositions });
-  } catch (err) {
-    console.error("Error broadcasting live data", err);
-  }
+      const livePositions = allPositions.map(stock => ({
+        name: stock.name,
+        price: stock.price + (Math.random() * 2 - 1) * stock.price * 0.005
+      }));
+
+      io.emit("live-prices", { holdings: liveHoldings, positions: livePositions });
+    } catch (err) {
+      console.error("Error broadcasting live data", err);
+    }
   }, 2000);
+}
+
+if (!uri) {
+  console.error("MongoDB URI is missing. Set MONGODB_URI or MONGO_URL in backend/.env");
 }
 
 mongoose.connect(uri)
   .then(() => {
     console.log("Connected to MongoDB!");
     if (!process.env.VERCEL) {
+      startLivePriceBroadcast();
       server.listen(PORT, () => {
         console.log(`App Started on port ${PORT} with WebSocket`);
       });
